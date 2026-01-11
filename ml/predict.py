@@ -6,7 +6,7 @@ from datetime import timedelta
 df = pd.read_csv("data/processed/exchange_rates_clean.csv")
 
 # Filter INR currency
-df = df[df["currency"] == "INR"].sort_values("date")
+df = df.sort_values("date")
 
 # Safety check
 if len(df) < 5:
