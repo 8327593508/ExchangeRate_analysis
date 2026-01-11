@@ -1,12 +1,13 @@
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
 import pandas as pd
 import numpy as np
 import plotly.express as px
 import requests
+
+from signup import signup_form
+from auth_utils import load_users
 
 
 # ---------------- Page Config ----------------
@@ -20,15 +21,25 @@ st.set_page_config(
 st_autorefresh(interval=60 * 1000, key="data_refresh")
 
 
-# ---------------- Authentication ----------------
-with open("config/users.yaml") as file:
-    config = yaml.load(file, Loader=SafeLoader)
+# ---------------- Sidebar Menu ----------------
+st.sidebar.title("Menu")
+menu = st.sidebar.radio("Navigation", ["Login", "Sign Up"])
+
+
+# ---------------- Signup Page ----------------
+if menu == "Sign Up":
+    signup_form()
+    st.stop()
+
+
+# ---------------- Login System ----------------
+credentials = load_users()
 
 authenticator = stauth.Authenticate(
-    config["credentials"],
-    config["cookie"]["name"],
-    config["cookie"]["key"],
-    config["cookie"]["expiry_days"]
+    credentials,
+    "forex_cookie",
+    "forex_dashboard_key",
+    30
 )
 
 name, authentication_status, username = authenticator.login("Login", "main")
@@ -38,15 +49,22 @@ if authentication_status is False:
     st.stop()
 
 if authentication_status is None:
-    st.warning("🔐 Please enter your username and password")
+    st.warning("🔐 Please login to continue")
     st.stop()
 
 authenticator.logout("Logout", "sidebar")
 st.sidebar.success(f"Welcome {name} 👋")
 
 
+# ---------------- Admin Panel ----------------
+if username == "admin":
+    st.sidebar.subheader("👑 Admin Panel")
+    users_df = pd.read_csv("data/users.csv")
+    st.sidebar.dataframe(users_df)
+
+
 # ---------------- API Config ----------------
-API_KEY = "YOUR_API_KEY"     # move to .env later
+API_KEY = "YOUR_API_KEY"
 BASE = "USD"
 
 
@@ -61,7 +79,6 @@ def get_live_rates():
 
         data = response.json()
 
-        # Safe handling for any API format
         if "conversion_rates" in data:
             return data["conversion_rates"]
         elif "rates" in data:
