@@ -3,7 +3,7 @@ name: Hourly Exchange Rate Auto Pipeline
 on:
   schedule:
     - cron: "0 * * * *"   # Runs every hour
-  workflow_dispatch:     # Allows manual trigger
+  workflow_dispatch:     # Manual trigger option
 
 jobs:
   run-pipeline:
@@ -36,10 +36,25 @@ jobs:
         run: |
           python ml/predict.py
 
+      - name: Generate Trading Signals
+        run: |
+          python ml/trading_signals.py
+
       - name: Commit and push updated data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add data/processed/*.csv
-          git commit -m "Hourly auto update exchange rate data and forecast" || echo "No changes to commit"
-          git push
+          git commit -m "Hourly auto update exchange rate data, forecast and signals" || echo "No changes to commit"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/8327593508/ExchangeRate_analysis.git
+
+      - name: Send Email Alert on Failure
+        if: failure()
+        env:
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
+        run: |
+          python utils/notify_failure.py "❌ Exchange Rate Pipeline Failed. Please check GitHub Actions logs."
