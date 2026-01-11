@@ -2,76 +2,88 @@
 
 # 📊 Forex Analytics & Trading Intelligence Platform
 
-A full-stack **real-time Forex analytics platform** with automated ETL pipeline, machine learning forecasting, trading signals, user authentication, admin panel, and live dashboard — built using Python, Streamlit, GitHub Actions, and ML.
+A full-stack **real-time Forex analytics platform** with automated ETL pipeline, machine learning forecasting, trading signals, authentication system, admin panel, and live dashboard — built using Python, Streamlit, GitHub Actions, and ML.
+
+---
+
+## 🌐 Live Dashboard (Real-Time Web App)
+
+🔴 **Live Forex Analytics Platform**
+👉 **Access Dashboard:**
+[https://webapppy-okwrqvknvcnxgc6fhegude.streamlit.app/](https://webapppy-okwrqvknvcnxgc6fhegude.streamlit.app/)
+
+The dashboard updates automatically with:
+
+* Real-time exchange rates
+* Machine learning forecasts
+* Trading signals
+* Strategy performance
+* Volatility & trend analysis
+
+Auto-refreshes every 60 seconds and pulls new data every hour via GitHub Actions.
 
 ---
 
 ## 🚀 Project Overview
 
-This project is an end-to-end **Forex analytics & trading intelligence system** that:
+This project is a complete **Forex trading intelligence system** that performs:
 
-* Extracts real-time exchange rate data from API
-* Cleans & processes data using an automated ETL pipeline
-* Trains a machine learning model to forecast exchange rates
-* Generates trading signals (BUY / SELL / HOLD)
-* Visualizes everything on a live interactive dashboard
-* Supports user login, signup, and admin monitoring
-* Auto-refreshes data every hour using GitHub Actions
-* Deploys online using Streamlit Cloud
+* Real-time API data extraction
+* Automated ETL processing
+* Machine learning forecasting
+* Trading signal generation
+* Live analytics dashboard
+* Secure user login & signup
+* Admin monitoring
+* Cloud deployment
+* CI/CD automation
 
-It follows **real industry architecture** used in data engineering, analytics, and fintech platforms.
+It follows real-world **FinTech & Data Engineering architecture**.
 
 ---
 
 ## 🧠 System Architecture
 
 ```
-        ┌────────────┐
-        │ Forex API   │
-        └─────┬──────┘
-              │
-         [ ETL Pipeline ]
-              │
-        ┌─────▼──────┐
-        │ Raw Data    │
-        └─────┬──────┘
-              │
-        ┌─────▼──────┐
-        │ Clean Data  │
-        └─────┬──────┘
-              │
-        ┌─────▼──────┐
-        │ ML Model    │
-        └─────┬──────┘
-              │
-        ┌─────▼──────┐
-        │ Forecasts  │
-        └─────┬──────┘
-              │
-        ┌─────▼──────┐
-        │ Signals    │
-        └─────┬──────┘
-              │
-        ┌─────▼────────────┐
-        │ Streamlit Web App │
-        └──────────────────┘
+Forex API
+   │
+   ▼
+ETL Pipeline (Extract → Transform → Load)
+   │
+   ▼
+Clean Dataset
+   │
+   ▼
+Machine Learning Model
+   │
+   ▼
+Forecast Engine
+   │
+   ▼
+Trading Signal Generator
+   │
+   ▼
+Streamlit Web Dashboard
+   │
+   ▼
+Users (Login / Signup / Admin)
 ```
 
 ---
 
-## 🎯 Key Features
+## 🎯 Core Features
 
 ### 🔄 Automated ETL Pipeline
 
 * Extracts real-time exchange rates from ExchangeRate API
+* Cleans and transforms raw data
 * Stores raw and processed datasets
-* Cleans and transforms currency data
-* Runs automatically every hour using GitHub Actions
+* Runs every hour using GitHub Actions
 
 ### 🤖 Machine Learning Forecasting
 
 * Trains Random Forest regression model
-* Uses feature engineering for time-series forecasting
+* Uses time-series features
 * Predicts next 7-day exchange rate trend
 * Stores forecast results automatically
 
@@ -80,46 +92,30 @@ It follows **real industry architecture** used in data engineering, analytics, a
 * Generates BUY / SELL / HOLD signals
 * Calculates strategy returns
 * Computes cumulative profit curve
-* Supports trading performance visualization
 
-### 🌐 Live Web Dashboard (Streamlit)
+### 🌐 Live Web Dashboard
 
 * Real-time market prices
-* Multi-currency comparison charts
+* Multi-currency comparison
 * Volatility & risk analysis
 * Trend indicators
 * Forecast visualization
-* Trading strategy performance
+* Trading performance tracking
 * Auto-refresh every 60 seconds
 
 ### 🔐 Authentication System
 
 * User Signup & Login
 * Secure hashed passwords
-* Admin panel to view users
-* User activity tracking ready
+* Admin panel to view all users
 
 ### ⚙ DevOps Automation
 
-* GitHub Actions pipeline runs every hour
-* Automatically updates data & forecasts
-* Commits new data back to repository
-* CI/CD ready
-
----
-
-## 🖥️ Tech Stack
-
-| Layer      | Technology              |
-| ---------- | ----------------------- |
-| Backend    | Python                  |
-| ETL        | Pandas, Requests        |
-| ML         | Scikit-learn, NumPy     |
-| Automation | GitHub Actions          |
-| Dashboard  | Streamlit, Plotly       |
-| Auth       | Streamlit-Authenticator |
-| Storage    | CSV (cloud-ready)       |
-| Deployment | Streamlit Cloud         |
+* GitHub Actions pipeline runs hourly
+* Automatically updates datasets
+* Retrains ML model
+* Generates forecasts & signals
+* Commits updated data
 
 ---
 
@@ -128,28 +124,28 @@ It follows **real industry architecture** used in data engineering, analytics, a
 ```
 ExchangeRate_analysis/
 │
-├── app.py                    # Main Streamlit app
-├── signup.py                # User registration
-├── auth_utils.py            # Authentication handler
-├── run_pipeline.py          # Orchestrates ETL + ML
+├── app.py                    # Main Streamlit web application
+├── signup.py                # User registration page
+├── auth_utils.py            # Authentication loader
+├── run_pipeline.py          # Pipeline orchestrator
 │
 ├── etl/
-│   ├── extract.py
-│   ├── transform.py
-│   └── load.py
+│   ├── extract.py           # API extraction
+│   ├── transform.py         # Data cleaning
+│   └── load.py              # Data storage
 │
 ├── ml/
-│   ├── train_model.py
-│   ├── predict.py
-│   └── trading_signals.py
+│   ├── train_model.py       # Model training
+│   ├── predict.py           # Forecast generation
+│   └── trading_signals.py  # Trading signal engine
 │
 ├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── users.csv
+│   ├── raw/                # Raw API data
+│   ├── processed/          # Cleaned data & forecasts
+│   └── users.csv           # User database
 │
 ├── .github/workflows/
-│   └── pipeline.yml         # GitHub Actions automation
+│   └── pipeline.yml        # GitHub Actions automation
 │
 ├── requirements.txt
 └── README.md
@@ -157,40 +153,99 @@ ExchangeRate_analysis/
 
 ---
 
-## 🔁 Automated Pipeline (GitHub Actions)
+## 🛠️ Local Setup & Installation
 
-* Runs every hour
+### Step 1 — Clone repository
+
+```bash
+git clone https://github.com/yourusername/ExchangeRate_analysis.git
+cd ExchangeRate_analysis
+```
+
+### Step 2 — Create virtual environment
+
+```bash
+python -m venv venv
+venv\Scripts\activate   # Windows
+```
+
+### Step 3 — Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Step 4 — Add API Key
+
+Edit `app.py`:
+
+```python
+API_KEY = "your_api_key_here"
+```
+
+---
+
+## ▶ Run Pipeline Locally
+
+```bash
+python run_pipeline.py
+```
+
+This will:
+
+* Fetch latest exchange rates
+* Clean data
+* Train ML model
+* Generate forecasts
+* Generate trading signals
+
+---
+
+## ▶ Run Web App Locally
+
+```bash
+streamlit run app.py
+```
+
+Access:
+
+```
+http://localhost:8501
+```
+
+---
+
+## 🔐 User Authentication
+
+### Signup
+
+* Create account using signup page
+* Passwords are hashed and stored securely
+
+### Login
+
+* Access dashboard after authentication
+
+### Admin Panel
+
+* Login as admin
+* View registered users
+
+---
+
+## 🔁 Automated Pipeline (CI/CD)
+
+GitHub Actions runs every hour:
+
 * Executes ETL pipeline
-* Trains ML model
-* Generates forecast
-* Creates trading signals
-* Commits updated data
+* Retrains ML model
+* Updates forecasts
+* Generates trading signals
+* Pushes updated data to repository
 
 ---
 
-## 📊 Dashboard Capabilities
-
-✔ Live Market Prices
-✔ Multi-Currency Comparison
-✔ Volatility & Risk Analysis
-✔ Trend Direction
-✔ 7-Day Forecast
-✔ Trading Strategy Performance
-✔ User Login & Signup
-✔ Admin Panel
-
----
-
-## 🔐 Authentication
-
-* Secure password hashing
-* Signup & Login system
-* Admin user management
-* Ready for email verification & OTP
-
----
-
-## 🚀 Deployment
+## ☁ Deployment
 
 Deployed using **Streamlit Cloud**
 
@@ -202,13 +257,13 @@ Deployed using **Streamlit Cloud**
 
 ## 📌 Future Enhancements
 
-* Email verification system
-* Forgot password reset
+* Email verification
+* Forgot password
 * Google OAuth login
-* User analytics & tracking
 * Portfolio simulator
 * Trading bot integration
 * PostgreSQL backend
+* User analytics
 
 ---
 
@@ -234,19 +289,6 @@ This project demonstrates real-world skills in:
 
 This is not just a dashboard — it's a **full trading intelligence platform**.
 
----
-
-## 📜 License
-
-MIT License — Free to use, modify and distribute.
-
----
-
-## 🌟 If you like this project
-
-Give it a ⭐ on GitHub and connect with me on LinkedIn.
-
 
 
 Just tell me 👍
-
