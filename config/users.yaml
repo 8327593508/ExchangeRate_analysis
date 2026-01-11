@@ -1,0 +1,15 @@
+credentials:
+  usernames:
+    subham:
+      email: subham@gmail.com
+      name: Subham Das
+      password: "$2b$12$dTaT4R7aQtF3QGILK7HFdevTlztMtX.iOR2BM5Ze/XPQqvcIjHEFG"  # example hash
+
+cookie:
+  expiry_days: 30
+  key: forex_dashboard_key
+  name: forex_cookie
+
+preauthorized:
+  emails:
+    - subham@gmail.com

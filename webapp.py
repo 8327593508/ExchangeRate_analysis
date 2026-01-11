@@ -1,14 +1,77 @@
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
+import streamlit_authenticator as stauth
+import yaml
+from yaml.loader import SafeLoader
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import requests
+
 
 # ---------------- Page Config ----------------
-st.set_page_config(page_title="Forex Analytics Platform", layout="wide")
+st.set_page_config(
+    page_title="Forex Analytics Platform",
+    layout="wide",
+    page_icon="💱"
+)
 
 # Auto refresh every 60 seconds
 st_autorefresh(interval=60 * 1000, key="data_refresh")
+
+
+# ---------------- Authentication ----------------
+with open("config/users.yaml") as file:
+    config = yaml.load(file, Loader=SafeLoader)
+
+authenticator = stauth.Authenticate(
+    config["credentials"],
+    config["cookie"]["name"],
+    config["cookie"]["key"],
+    config["cookie"]["expiry_days"]
+)
+
+name, authentication_status, username = authenticator.login("Login", "main")
+
+if authentication_status is False:
+    st.error("❌ Username or password is incorrect")
+    st.stop()
+
+if authentication_status is None:
+    st.warning("🔐 Please enter your username and password")
+    st.stop()
+
+authenticator.logout("Logout", "sidebar")
+st.sidebar.success(f"Welcome {name} 👋")
+
+
+# ---------------- API Config ----------------
+API_KEY = "YOUR_API_KEY"     # move to .env later
+BASE = "USD"
+
+
+# ---------------- Live Market API ----------------
+def get_live_rates():
+    try:
+        url = f"https://v6.exchangerate-api.com/v6/{API_KEY}/latest/{BASE}"
+        response = requests.get(url, timeout=10)
+
+        if response.status_code != 200:
+            return {}
+
+        data = response.json()
+
+        # Safe handling for any API format
+        if "conversion_rates" in data:
+            return data["conversion_rates"]
+        elif "rates" in data:
+            return data["rates"]
+        else:
+            return {}
+
+    except Exception:
+        return {}
+
 
 # ---------------- Load Data ----------------
 actual_df = pd.read_csv("data/processed/exchange_rates_clean.csv")
@@ -17,19 +80,46 @@ signals_df = pd.read_csv("data/processed/trading_signals.csv")
 
 actual_df["date"] = pd.to_datetime(actual_df["date"])
 forecast_df["date"] = pd.to_datetime(forecast_df["date"])
+signals_df["date"] = pd.to_datetime(signals_df["date"])
+
 
 # ---------------- Sidebar ----------------
-st.sidebar.title("Currency Selector")
+st.sidebar.title("💱 Currency Selector")
 
 currency_list = actual_df["currency"].unique().tolist()
+
 selected_currencies = st.sidebar.multiselect(
     "Select currencies for comparison",
     currency_list,
     default=currency_list[:3]
 )
 
+
 # ---------------- Title ----------------
 st.title("💱 Forex Analytics & Trading Intelligence Platform")
+
+
+# ---------------- Live Market Prices ----------------
+st.subheader("📡 Live Market Prices")
+
+live_rates = get_live_rates()
+
+if live_rates:
+    cols = st.columns(3)
+    pairs = ["INR", "EUR", "GBP"]
+
+    for col, pair in zip(cols, pairs):
+        price = live_rates.get(pair)
+        if price:
+            col.metric(f"USD → {pair}", round(price, 4))
+        else:
+            col.metric(f"USD → {pair}", "N/A")
+else:
+    st.warning("Live market data unavailable.")
+
+
+st.divider()
+
 
 # ---------------- KPI Panel ----------------
 latest_data = actual_df.sort_values("date").groupby("currency").last().reset_index()
@@ -45,10 +135,12 @@ with col2:
     st.metric("Avg Selected Rate", avg_rate)
 
 with col3:
-    latest_date = actual_df["date"].max().date()
-    st.metric("Last Update", latest_date.strftime("%Y-%m-%d"))
+    latest_date = actual_df["date"].max().strftime("%Y-%m-%d")
+    st.metric("Last Update", latest_date)
+
 
 st.divider()
+
 
 # ---------------- Multi-Currency Comparison ----------------
 st.subheader("📊 Multi-Currency Comparison")
@@ -65,7 +157,9 @@ fig_compare = px.line(
 
 st.plotly_chart(fig_compare, use_container_width=True)
 
+
 st.divider()
+
 
 # ---------------- Volatility Analysis ----------------
 st.subheader("⚡ Volatility & Risk Analysis")
@@ -90,7 +184,9 @@ fig_vol = px.bar(
 
 st.plotly_chart(fig_vol, use_container_width=True)
 
+
 st.divider()
+
 
 # ---------------- Trend Direction ----------------
 st.subheader("📈 Trend Direction Indicator")
@@ -113,7 +209,9 @@ for currency in selected_currencies:
 trend_df = pd.DataFrame(trend_list, columns=["Currency", "Trend"])
 st.dataframe(trend_df)
 
+
 st.divider()
+
 
 # ---------------- Forecast ----------------
 st.subheader("🔮 7-Day Forecast")
@@ -127,9 +225,11 @@ fig_forecast = px.line(
 
 st.plotly_chart(fig_forecast, use_container_width=True)
 
+
 st.divider()
 
-# ---------------- Trading Strategy Performance ----------------
+
+# ---------------- Trading Strategy ----------------
 st.subheader("💰 Trading Strategy Performance")
 
 signals_df["return"] = signals_df["predicted_rate"].pct_change()
@@ -150,7 +250,7 @@ fig_strategy = px.line(
 )
 
 st.plotly_chart(fig_strategy, use_container_width=True)
-
 st.dataframe(signals_df)
 
-st.success("Dashboard auto-updated from live pipeline data!")
+
+st.success("✅ Dashboard auto-updated from live pipeline data!")
