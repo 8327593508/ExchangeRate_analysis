@@ -24,7 +24,7 @@ jobs:
 
       - name: Run ETL Pipeline
         env:
-          EXCHANGE_API_KEY: ${{ secrets.EXCHANGE_API_KEY }}
+          API_KEY: ${{ secrets.API_KEY }}
         run: |
           python run_pipeline.py
 
