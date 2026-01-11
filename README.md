@@ -20,6 +20,9 @@ The dashboard updates automatically with:
 * Strategy performance
 * Volatility & trend analysis
 
+<img width="1910" height="790" alt="image" src="https://github.com/user-attachments/assets/4313d9a8-f788-4e50-ad5b-55dd42e44123" />
+
+
 Auto-refreshes every 60 seconds and pulls new data every hour via GitHub Actions.
 
 ---
@@ -292,3 +295,4 @@ This is not just a dashboard — it's a **full trading intelligence platform**.
 
 
 Just tell me 👍
+
