@@ -1,4 +1,10 @@
 requests
 pandas
+numpy
 scikit-learn
 joblib
+python-dateutil
+streamlit
+plotly
+python-dotenv
+
